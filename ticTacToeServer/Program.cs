@@ -6,7 +6,9 @@ namespace ticTacToeServer
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            SimpleGameServer server = new SimpleGameServer("127.0.0.1", 4546);
+
+            server.StartServer();
         }
     }
 }

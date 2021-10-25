@@ -12,12 +12,13 @@ namespace ticTacToeServer.Game
 
         public GameLogic(char emptyCell, params char[] players)
         {
-            Console.WriteLine(players);
             this.emptyCell = emptyCell;
-            foreach (char i in players)         //Add players
+
+            foreach (char i in players)   //Add players
             {
                 this.players.Add(++currentPlayerIndex, i);
             }
+
             for (int i = 0; i < 3; i++)         //Initial grid
             {
                 for (int j = 0; j < 3; j++)
