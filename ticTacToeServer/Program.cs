@@ -1,14 +1,10 @@
-﻿using System;
+using System;
 
-namespace ticTacToeServer
-{
-    class Program
-    {
-        static void Main(string[] args)
-        {
-            SimpleGameServer server = new SimpleGameServer("127.0.0.1", 4546);
-
-            server.StartServer();
+namespace ticTacToeServer{
+    public class Program{
+        public static void Main(){
+            GameServer newServer = new GameServer(4546);
+            newServer.StartServer();
         }
     }
 }

@@ -1,9 +1,5 @@
-namespace ticTacToeServer.Game
-{
-    public enum State
-    {
-        Win,
-        Draw,
-        NextMove,
-    }
+public enum State{
+    NextTurn,
+    Win,
+    Draw,
 }

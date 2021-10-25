@@ -8,7 +8,8 @@ namespace ticTacToeClient
 
         static void Main(string[] args)
         {
-            Connection connect = new Connection("127.0.0.1", 4546);
+            GameConnection connect = new GameConnection();
+            connect.Connect("127.0.0.1", 4546);
         }
 
     }
