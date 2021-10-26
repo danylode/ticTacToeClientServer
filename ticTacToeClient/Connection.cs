@@ -22,16 +22,13 @@ namespace ticTacToeClient
                 writer = new StreamWriter(stream);
                 writer.AutoFlush = true;
                 Console.WriteLine($"Connected to {ipAddres}:{port}");
-                char symbol = Console.ReadLine()[0];
-                SendMessage(symbol.ToString());
-                Procces();
+                Process();
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
             }
         }
-
         public virtual string WaitMessage()
         {
             string message;
@@ -47,10 +44,11 @@ namespace ticTacToeClient
             writer.WriteLine(message);
         }
 
-        public virtual void Procces(){
+        public virtual void Process(){
             while(true){
                 Console.WriteLine(WaitMessage());
             }
         }
+
     }
 }

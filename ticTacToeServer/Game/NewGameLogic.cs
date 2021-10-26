@@ -60,10 +60,9 @@ namespace ticTacToeServer.Game
         {
             posX--;
             posY--;
-            if (gameGrid[posX, posX] == EMPTYCHAR)
+            if (gameGrid[posX, posY] == EMPTYCHAR)
             {
                 gameGrid[posX, posY] = players[currentPlayer];
-                ChangePlayer();
             }
             else
             {
@@ -71,7 +70,7 @@ namespace ticTacToeServer.Game
             }
         }
 
-        private void ChangePlayer()
+        public void ChangePlayer()
         {
             currentPlayer = currentPlayer == 0 ? 1 : 0;
         }

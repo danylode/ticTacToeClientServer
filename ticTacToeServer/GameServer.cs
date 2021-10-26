@@ -12,7 +12,6 @@ namespace ticTacToeServer
     {
         private IPAddress iPAddress;
         private int port;
-
         private List<Player> players = new List<Player>();
         public GameServer(int port)
         {
@@ -36,6 +35,7 @@ namespace ticTacToeServer
                 {
                     TcpClient client = listener.AcceptTcpClient();
                     Player newClient = new Player(client);
+                    newClient.SendMessage("Input your char: ");
                     char symbol = newClient.WaitMessage()[0];
                     newClient.PlayerSymbol = symbol;
 
@@ -59,44 +59,58 @@ namespace ticTacToeServer
             State gameState = State.NextTurn;
             Player currentPlayer;
             Player waitPlayer;
+            GridUpdate(game.GetConvertedGrid(), player1, player2);
 
             while (true)
             {
                 currentPlayer = player1.PlayerSymbol == game.GetCurrentPlayer() ? player1 : player2;
-                waitPlayer = currentPlayer == player1? player2: player1;
+                waitPlayer = currentPlayer == player1 ? player2 : player1;
 
+                try{
+                    NextTurn(game, currentPlayer, waitPlayer);
+                }catch(Exception e){
+                    currentPlayer.SendMessage(e.Message);
+                    continue;
+                }
                 GridUpdate(game.GetConvertedGrid(), player1, player2);
-                waitPlayer.SendMessage("Wait");
-                if (gameState == State.Win)
+
+                gameState = game.GetState();
+                Console.WriteLine($"State{gameState.ToString()}");
+                if (gameState == State.Draw)
                 {
-                    Console.WriteLine("Game Finished");
-                    var winner = game.GetCurrentPlayer();
-                    if (winner == 0)
-                    {
-                        players[0].SendMessage("Win");
-                        players[1].SendMessage("Lose");
-                    }
-                    else
-                    {
-                        players[0].SendMessage("Lose");
-                        players[1].SendMessage("Win");
-                    }
+                    WhenDraw(player1, player2);
                     break;
                 }
-                else if (gameState == State.Draw)
+                else if (gameState == State.Win)
                 {
-                    player1.SendMessage("Draw");
-                    player2.SendMessage("Draw");
+                    WhenWin(game, player1, player2);
                     break;
                 }
-                else
-                {
-                    currentPlayer.SendMessage("NextTurn");
-                    NextTurn(game, currentPlayer);
-                    waitPlayer.SendMessage(" ");
-                }
+                game.ChangePlayer();
             }
 
+        }
+
+        private void WhenWin(NewGameLogic game, Player player1, Player player2)
+        {
+            Console.WriteLine("Game Finished");
+            var winner = game.GetCurrentPlayer();
+            if (winner != 0)
+            {
+                player1.SendMessage("Win");
+                player2.SendMessage("Lose");
+            }
+            else
+            {
+                player1.SendMessage("Lose");
+                player2.SendMessage("Win");
+            }
+        }
+
+        private void WhenDraw(Player player1, Player player2)
+        {
+            player1.SendMessage("Draw");
+            player2.SendMessage("Draw");
         }
 
         private void GridUpdate(char[] grid, params Player[] players)
@@ -108,17 +122,21 @@ namespace ticTacToeServer
                 i.SendMessage(JsonSerializer.Serialize<char[]>(grid));
             }
         }
-        private void NextTurn(NewGameLogic game, Player currentPlayer)
+        private void NextTurn(NewGameLogic game, Player currentPlayer, Player waitPlayer)
         {
+            currentPlayer.SendMessage("Turn");
+            waitPlayer.SendMessage("Wait");
             int[] input = JsonSerializer.Deserialize<int[]>(currentPlayer.WaitMessage());
             try
             {
                 Console.WriteLine($"Move {input[0]}:{input[1]}");
                 game.NextTurn(input[0], input[1]);
+                waitPlayer.SendMessage(" ");
             }
             catch (Exception e)
             {
                 Console.WriteLine(e.Message);
+                throw new Exception("CellNotEmpty");
             }
         }
     }

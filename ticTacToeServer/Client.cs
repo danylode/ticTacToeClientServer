@@ -24,9 +24,5 @@ namespace ticTacToeServer{
             string message = reader.ReadLine();
             return message;
         }
-
-        public void Disconect(){
-            client.Close();
-        }
     }
 }

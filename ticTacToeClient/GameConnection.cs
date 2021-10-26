@@ -26,9 +26,11 @@ namespace ticTacToeClient
             }
         }
 
-        public override void Procces()
+        public override void Process()
         {
             char[] grid = new char[9];
+            char symbol = Console.ReadLine()[0];
+            SendMessage(symbol.ToString());
             while (true)
             {
                 string state = WaitMessage();
@@ -43,7 +45,7 @@ namespace ticTacToeClient
                     case "Draw":
                         Console.WriteLine("Draw");
                         break;
-                    case "NextTurn":
+                    case "Turn":
                         Console.WriteLine("Next turn!");
                         Console.Write("Input (x, y): ");
                         string[] input = Console.ReadLine().Split(' ');
@@ -57,9 +59,10 @@ namespace ticTacToeClient
                         grid = JsonSerializer.Deserialize<char[]>(WaitMessage());
                         DrawGrid(grid);
                         break;
+                    case "CellNotEmpty":
+                        Console.WriteLine("Cell not Empty");
+                        break;
                 }
-
-
             }
 
         }
